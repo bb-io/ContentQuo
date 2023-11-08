@@ -15,7 +15,6 @@ public class ConnectionValidator : IConnectionValidator
         try
         {
             await actions.ListAllEvaluations();
-
             return new()
             {
                 IsValid = true
