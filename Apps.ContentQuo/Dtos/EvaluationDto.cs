@@ -1,14 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using Blackbird.Applications.Sdk.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Apps.ContentQuo.Dtos
 {
     public class EvaluationDto
     {
+        [Display("Analytical issue count")]
         [JsonProperty("analyticalIssueCount")]
         public int AnalyticalIssueCount { get; set; }
 
@@ -21,21 +24,23 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("created")]
         public string Created { get; set; }
 
+        [Display("Edit count")]
         [JsonProperty("editCount")]
         public int EditCount { get; set; }
 
         [JsonProperty("eid")]
-        public int Eid { get; set; }
+        public string Id { get; set; }
 
         [JsonProperty("finished")]
         public string Finished { get; set; }
 
         [JsonProperty("groupID")]
-        public int GroupID { get; set; }
+        public string GroupID { get; set; }
 
         [JsonProperty("groupName")]
         public string GroupName { get; set; }
 
+        [Display("Holistic rating count")]
         [JsonProperty("holisticRatingCount")]
         public int HolisticRatingCount { get; set; }
 
@@ -46,41 +51,48 @@ namespace Apps.ContentQuo.Dtos
         public string ProfileID { get; set; }
 
         [JsonProperty("projectID")]
-        public int ProjectID { get; set; }
+        public string ProjectID { get; set; }
 
+        [Display("Quality result")]
         [JsonProperty("qualityResult")]
         public QualityResult QualityResult { get; set; }
 
         [JsonProperty("scope")]
         public Scope Scope { get; set; }
 
+        [Display("Scored analytical issue count")]
         [JsonProperty("scoredAnalyticalIssueCount")]
         public int ScoredAnalyticalIssueCount { get; set; }
 
+        [Display("Source locale")]
         [JsonProperty("srcLocale")]
         public string SrcLocale { get; set; }
 
         [JsonProperty("started")]
         public string Started { get; set; }
 
+        [Display("Target locale")]
         [JsonProperty("tgtLocale")]
         public string TgtLocale { get; set; }
 
         [JsonProperty("translatorID")]
-        public int TranslatorID { get; set; }
+        public string TranslatorID { get; set; }
 
         [JsonProperty("workflowID")]
-        public int WorkflowID { get; set; }
+        public string WorkflowID { get; set; }
 
+        [Display("Workflow mame")]
         [JsonProperty("workflowName")]
         public string WorkflowName { get; set; }
     }
 
     public class Accuracy
     {
+        [Display("Grade index")]
         [JsonProperty("gradeIndex")]
         public int GradeIndex { get; set; }
 
+        [Display("Grade name")]
         [JsonProperty("gradeName")]
         public string GradeName { get; set; }
 
@@ -90,9 +102,11 @@ namespace Apps.ContentQuo.Dtos
 
     public class Analytical
     {
+        [Display("Grade index")]
         [JsonProperty("gradeIndex")]
         public int GradeIndex { get; set; }
 
+        [Display("Grade name")]
         [JsonProperty("gradeName")]
         public string GradeName { get; set; }
 
@@ -121,10 +135,11 @@ namespace Apps.ContentQuo.Dtos
     public class Auto
     {
         [JsonProperty("characTer")]
-        public double CharacTer { get; set; }
+        public double? CharacTer { get; set; }
 
+        [Display("Taus edit density")]
         [JsonProperty("tausEditDensity")]
-        public int TausEditDensity { get; set; }
+        public int? TausEditDensity { get; set; }
     }
 
     public class Comment
@@ -135,14 +150,16 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("stepId")]
         public string StepId { get; set; }
 
+        [Display("Assignment index")]
         [JsonProperty("assignmentIndex")]
         public int AssignmentIndex { get; set; }
 
+        [Display("Assignment role")]
         [JsonProperty("assignmentRole")]
         public string AssignmentRole { get; set; }
 
         [JsonProperty("authorId")]
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
 
         [JsonProperty("text")]
         public string Text { get; set; }
@@ -168,6 +185,7 @@ namespace Apps.ContentQuo.Dtos
 
     public class Scope
     {
+        [Display("File count")]
         [JsonProperty("fileCount")]
         public int FileCount { get; set; }
 
