@@ -17,6 +17,7 @@ using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.ContentQuo.Actions
 {
+    [ActionList]
     public class BilingualFilesActions : BaseInvocable
     {
         #region Fields
