@@ -31,8 +31,8 @@ namespace Apps.ContentQuo.Actions
             _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
         }
 
-        [Action("List evaluations", Description = "List evaluations")]
-        public async Task<ListBilingualFilesResponse> ListAllEvaluations([ActionParameter] GetEvaluationRequest input)
+        [Action("List evaluation files", Description = "List evaluation files")]
+        public async Task<ListBilingualFilesResponse> ListAllEvaluationFiles([ActionParameter] GetEvaluationRequest input)
         {
             var request = new RestRequest($"/evaluations/{input.Id}/files", Method.Get);
             var response = await _client.ExecuteAsync<List<BilingualFileDto>>(request);

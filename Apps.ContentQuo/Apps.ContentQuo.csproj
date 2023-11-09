@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 	<Product>ContentQuo</Product>
 	<Description>Vendor-agnostic cloud software for managing and scaling Language Quality (LQA) programs for Human and Machine Translation</Description>
-	<Version>1.0.2</Version>
+	<Version>1.0.3</Version>
 	<AssemblyName>Apps.ContentQuo</AssemblyName>
   </PropertyGroup>
 
