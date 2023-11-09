@@ -144,8 +144,8 @@ namespace Apps.ContentQuo.Dtos
 
     public class Comment
     {
-        [JsonProperty("comments")]
-        public List<Comment> Comments { get; set; }
+        //[JsonProperty("comments")]
+        //public List<Comment> Comments { get; set; }
 
         [JsonProperty("stepId")]
         public string StepId { get; set; }
