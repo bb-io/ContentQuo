@@ -14,6 +14,7 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("currentStep")]
         public Step CurrentStep { get; set; }
 
+        [Display("ID")]
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -48,6 +49,7 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("deadline")]
         public DateTime Deadline { get; set; }
 
+        [Display("ID")]
         [JsonProperty("id")]
         public string Id { get; set; }
 
