@@ -13,8 +13,8 @@ namespace Apps.ContentQuo.Models.Requests
     {
         public File File { get; set; }
 
-        [Display("File path for uploading")]
-        public string FilePath { get; set; }
+        [Display("Path")]
+        public string? FilePath { get; set; }
 
         [Display("Is file reference")]
         public bool? IsRef { get; set; }

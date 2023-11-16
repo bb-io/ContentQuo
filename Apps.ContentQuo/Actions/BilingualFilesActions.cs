@@ -44,7 +44,7 @@ namespace Apps.ContentQuo.Actions
         {
             var request = new RestRequest($"/evaluations/{input.Id}/files", Method.Post);
             request.AddFile("file", uploadFile.File.Bytes, uploadFile.File.Name);
-            request.AddParameter("fileUri", uploadFile.FilePath);
+            request.AddParameter("fileUri", (uploadFile.FilePath != null ? uploadFile.FilePath + "/" : "") + uploadFile.File.Name);
             request.AddParameter("ref", uploadFile.IsRef ?? false);
             var response = await _client.ExecuteAsync<UploadFileResponse>(request);
             return response.Data;

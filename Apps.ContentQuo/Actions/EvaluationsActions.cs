@@ -23,14 +23,6 @@ public class EvaluationsActions : BaseInvocable
         _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
     }
 
-    [Action("List evaluations", Description = "List evaluations")]
-    public async Task<ListEvaluationsResponse> ListAllEvaluations()
-    {
-        var request = new RestRequest("/evaluations", Method.Get);
-        var response = await _client.ExecuteAsync<ListEvaluationsResponse>(request);
-        return response.Data;
-    }
-
     [Action("Create evaluation", Description = "Create evaluation")]
     public async Task<EvaluationDto> CreateEvaluation([ActionParameter] CreateEvaluationRequest input)
     {
@@ -73,16 +65,18 @@ public class EvaluationsActions : BaseInvocable
         };
     }
 
-    [Action("Get evaluation segments", Description = "Get evaluation segments")]
-    public async Task<ListEvaluationSegmentsResponse> GetEvaluationSegments([ActionParameter] GetEvaluationRequest input)
-    {
-        var request = new RestRequest($"/evaluations/{input.Id}/segments", Method.Get);
-        var response = await _client.ExecuteAsync<List<SegmentDto>>(request);
-        return new ListEvaluationSegmentsResponse()
-        {
-            Segments = response.Data
-        };
-    }
+    // Waiting for discussion on how to use these segments in Blackbird
+
+    //[Action("Get evaluation segments", Description = "Get evaluation segments")]
+    //public async Task<ListEvaluationSegmentsResponse> GetEvaluationSegments([ActionParameter] GetEvaluationRequest input)
+    //{
+    //    var request = new RestRequest($"/evaluations/{input.Id}/segments", Method.Get);
+    //    var response = await _client.ExecuteAsync<List<SegmentDto>>(request);
+    //    return new ListEvaluationSegmentsResponse()
+    //    {
+    //        Segments = response.Data
+    //    };
+    //}
 
     [Action("Get evaluation workflow", Description = "Get evaluation workflow")]
     public async Task<WorkflowDto> GetEvaluationWorkflow([ActionParameter] GetEvaluationRequest input)
@@ -92,14 +86,18 @@ public class EvaluationsActions : BaseInvocable
         return response.Data;
     }
 
-    [Action("Assign workflow step", Description = "Assign workflow step")]
-    public async Task AssignWorkflowStep([ActionParameter] GetEvaluationRequest input, 
-        [ActionParameter] AssignWorkflowStepRequest inputStep)
-    {
-        var request = new RestRequest($"/evaluations/{input.Id}/workflow/assign", Method.Get);
-        request.AddQueryParameter("stepId", inputStep.StepId);
-        request.AddQueryParameter("userId", inputStep.UserId);
-        await _client.ExecuteAsync<WorkflowDto>(request);
-    }
+    // Implement metrics after discussion on how to use this step in Blackbird. Main question: Are metric types variable?
+
+    // Waiting for discussion on how to use this step in Blackbird
+
+    //[Action("Assign user to workflow step", Description = "Assigns a user to a workflow step in an evaluation")]
+    //public async Task AssignWorkflowStep([ActionParameter] GetEvaluationRequest input, 
+    //    [ActionParameter] AssignWorkflowStepRequest inputStep)
+    //{
+    //    var request = new RestRequest($"/evaluations/{input.Id}/workflow/assign", Method.Get);
+    //    request.AddQueryParameter("stepId", inputStep.StepId);
+    //    request.AddQueryParameter("userId", inputStep.UserId);
+    //    await _client.ExecuteAsync<WorkflowDto>(request);
+    //}
 
 }

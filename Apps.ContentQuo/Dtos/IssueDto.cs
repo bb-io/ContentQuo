@@ -16,9 +16,11 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [Display("File name")]
         [JsonProperty("fileName")]
         public string FileName { get; set; }
 
+        [Display("ID")]
         [JsonProperty("id")]
         public string Id { get; set; }
 
@@ -29,13 +31,14 @@ namespace Apps.ContentQuo.Dtos
         [JsonProperty("severity")]
         public string Severity { get; set; }
 
-        [Display("Status name")]
+        [Display("Status")]
         [JsonProperty("statusName")]
         public StatusName StatusName { get; set; }
     }
 
     public class Category
     {
+        [Display("ID")]
         [JsonProperty("id")]
         public string Id { get; set; }
 
@@ -45,6 +48,7 @@ namespace Apps.ContentQuo.Dtos
 
     public class StatusName
     {
+        [Display("ID")]
         [JsonProperty("id")]
         public string Id { get; set; }
 
