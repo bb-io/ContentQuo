@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.ContentQuo.DataSourceHandler;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,10 +24,12 @@ namespace Apps.ContentQuo.Models.Requests
 
         [Display("Source locale")]
         [JsonProperty("srcLocale")]
+        [DataSource(typeof(LanguageDataHandler))]
         public string SrcLocale { get; set; }
 
         [Display("Target locale")]
         [JsonProperty("tgtLocale")]
+        [DataSource(typeof(LanguageDataHandler))]
         public string TgtLocale { get; set; }
 
         // Data source endpoint needed
