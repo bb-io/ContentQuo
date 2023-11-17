@@ -6,12 +6,13 @@
     <Nullable>enable</Nullable>
 	<Product>ContentQuo</Product>
 	<Description>Vendor-agnostic cloud software for managing and scaling Language Quality (LQA) programs for Human and Machine Translation</Description>
-	<Version>1.0.4</Version>
+	<Version>1.0.5</Version>
 	<AssemblyName>Apps.ContentQuo</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.1" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.13" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
     <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="110.2.0" />
