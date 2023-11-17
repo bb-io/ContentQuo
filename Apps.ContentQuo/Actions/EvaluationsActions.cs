@@ -24,11 +24,11 @@ public class EvaluationsActions : BaseInvocable
     }
 
     [Action("Create evaluation", Description = "Create evaluation")]
-    public async Task<EvaluationDto> CreateEvaluation([ActionParameter] CreateEvaluationRequest input)
+    public async Task<CreatedEvaluationDto> CreateEvaluation([ActionParameter] CreateEvaluationRequest input)
     {
         var request = new RestRequest("/evaluations", Method.Post);
         request.AddJsonBody(input);
-        var response = await _client.ExecuteAsync<EvaluationDto>(request);
+        var response = await _client.ExecuteAsync<CreatedEvaluationDto>(request);
         return response.Data;
     }
 
