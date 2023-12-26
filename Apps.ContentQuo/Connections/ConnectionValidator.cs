@@ -1,8 +1,5 @@
-﻿using Apps.ContentQuo.Actions;
-using Apps.ContentQuo.Models.Responses;
-using Blackbird.Applications.Sdk.Common.Authentication;
+﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
-using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
 namespace Apps.ContentQuo.Connections;

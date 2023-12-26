@@ -1,22 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Files;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 
-namespace Apps.ContentQuo.Models.Requests
+namespace Apps.ContentQuo.Models.Requests;
+
+public class UploadFileRequest
 {
-    public class UploadFileRequest
-    {
-        public File File { get; set; }
+    public FileReference File { get; set; }
 
-        [Display("Path")]
-        public string? FilePath { get; set; }
+    [Display("Path")]
+    public string? FilePath { get; set; }
 
-        [Display("Is file reference")]
-        public bool? IsRef { get; set; }
-    }
+    [Display("Is file reference")]
+    public bool? IsRef { get; set; }
 }

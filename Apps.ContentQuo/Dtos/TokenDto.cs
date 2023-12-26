@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Apps.ContentQuo.Dtos;
 
-namespace Apps.ContentQuo.Dtos
+public class TokenDto
 {
-    public class TokenDto
-    {
-        public string Token { get; set; }
-    }
+    public string Token { get; set; }
 }

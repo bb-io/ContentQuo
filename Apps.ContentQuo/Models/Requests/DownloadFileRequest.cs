@@ -1,15 +1,9 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Apps.ContentQuo.Models.Requests
+namespace Apps.ContentQuo.Models.Requests;
+
+public class DownloadFileRequest
 {
-    public class DownloadFileRequest
-    {
-        [Display("File ID")]
-        public string Id { get; set; }
-    }
+    [Display("File ID")]
+    public string Id { get; set; }
 }
