@@ -1,5 +1,4 @@
-﻿using Apps.ContentQuo.Actions;
-using Apps.ContentQuo.Models.Responses;
+﻿using Apps.ContentQuo.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
