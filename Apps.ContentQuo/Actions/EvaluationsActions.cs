@@ -4,7 +4,9 @@ using Apps.ContentQuo.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
+using System.Net.Mime;
 
 namespace Apps.ContentQuo.Actions;
 
@@ -15,11 +17,14 @@ public class EvaluationsActions : BaseInvocable
 
     private readonly ContentQuoClient _client;
 
+    private readonly IFileManagementClient _fileManagementClient;
+
     #endregion
 
-    public EvaluationsActions(InvocationContext invocationContext) : base(invocationContext)
+    public EvaluationsActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(invocationContext)
     {
         _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
+        _fileManagementClient = fileManagementClient;
     }
 
     [Action("Create evaluation", Description = "Create evaluation")]
@@ -43,7 +48,7 @@ public class EvaluationsActions : BaseInvocable
     public async Task DeleteEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}", Method.Delete);
-        var response = await _client.ExecuteAsync<EvaluationDto>(request);
+        await _client.ExecuteAsync(request);
     }
 
     [Action("Start evaluation", Description = "Start evaluation")]
@@ -53,14 +58,41 @@ public class EvaluationsActions : BaseInvocable
         await _client.ExecuteAsync(request);
     }
 
-    [Action("Get evaluation issues", Description = "Get evaluation issues")]
+    [Action("Get evaluation issues", Description = "Get all the evaluation issues. Use the issues as table rows to insert the issues in a tabular app")]
     public async Task<ListEvaluationIssuesResponse> GetEvaluationIssues([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
-        var response = await _client.ExecuteAsync<List<IssueDto>>(request);
+        var response = await _client.ExecuteAsync<ListIssuesDto>(request);
+
+        var tableRows = response.Data.Issues.Select(x => new List<string> { 
+            x.Id, 
+            x.FileName, 
+            x.SegmentId, 
+            x.Severity,
+            x.Status.Name,
+            string.Join(", ", x.Categories.Select(x => x.Name)), 
+            x.Description ?? "",
+        });
+
         return new ListEvaluationIssuesResponse()
         {
-            Issues = response.Data
+            Issues = response.Data.Issues,
+            IssuesAsTableRows = tableRows.ToList()
+        };
+    }
+
+    public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
+    {
+        var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.Id ?? "0"}", Method.Get);
+        var response = await _client.ExecuteAsync(request);
+        var contentDisposition =
+            new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
+                .Value.ToString());
+
+        var file = await _fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
+        return new()
+        {
+            File = file
         };
     }
 

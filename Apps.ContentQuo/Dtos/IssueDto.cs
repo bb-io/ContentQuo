@@ -9,7 +9,7 @@ public class IssueDto
     public List<Category> Categories { get; set; }
 
     [JsonProperty("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [Display("File name")]
     [JsonProperty("fileName")]
@@ -27,8 +27,8 @@ public class IssueDto
     public string Severity { get; set; }
 
     [Display("Status")]
-    [JsonProperty("statusName")]
-    public StatusName StatusName { get; set; }
+    [JsonProperty("status")]
+    public Status Status { get; set; }
 }
 
 public class Category
@@ -41,7 +41,7 @@ public class Category
     public string Name { get; set; }
 }
 
-public class StatusName
+public class Status
 {
     [Display("ID")]
     [JsonProperty("id")]
