@@ -8,6 +8,11 @@ public class ListEvaluationIssuesResponse
     public List<IssueDto> Issues { get; set; }
 
     [Display("Issues as table rows")]
-    public List<List<string>> IssuesAsTableRows { get; set; }
+    public List<RowResponse> IssuesAsTableRows { get; set; }
 
+}
+
+public class RowResponse
+{
+    public List<string> Row { get; set; }
 }

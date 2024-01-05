@@ -72,7 +72,7 @@ public class EvaluationsActions : BaseInvocable
             x.Status.Name,
             string.Join(", ", x.Categories.Select(x => x.Name)), 
             x.Description ?? "",
-        });
+        }).Select(x => new RowResponse { Row = x});
 
         return new ListEvaluationIssuesResponse()
         {
@@ -84,7 +84,7 @@ public class EvaluationsActions : BaseInvocable
     [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
-        var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.Id ?? "0"}", Method.Get);
+        var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.ReportId ?? "0"}", Method.Get);
         var response = await _client.ExecuteAsync(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
