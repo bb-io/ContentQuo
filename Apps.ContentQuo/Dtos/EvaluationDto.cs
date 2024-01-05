@@ -18,16 +18,16 @@ public class EvaluationDto
     [JsonProperty("created")]
     public string Created { get; set; }
 
-        //[Display("Edit count")]
-        //[JsonProperty("editCount")]
-        //public int EditCount { get; set; }
+    //[Display("Edit count")]
+    //[JsonProperty("editCount")]
+    //public int EditCount { get; set; }
 
     [Display("ID")]
     [JsonProperty("eid")]
     public string Id { get; set; }
 
-        //[JsonProperty("finished")]
-        //public string Finished { get; set; }
+    //[JsonProperty("finished")]
+    //public string Finished { get; set; }
 
     [Display("Group ID")]
     [JsonProperty("groupID")]
@@ -37,9 +37,9 @@ public class EvaluationDto
     [JsonProperty("groupName")]
     public string GroupName { get; set; }
 
-        //[Display("Holistic rating count")]
-        //[JsonProperty("holisticRatingCount")]
-        //public int HolisticRatingCount { get; set; }
+    //[Display("Holistic rating count")]
+    //[JsonProperty("holisticRatingCount")]
+    //public int HolisticRatingCount { get; set; }
 
     [JsonProperty("name")]
     public string Name { get; set; }
@@ -52,31 +52,31 @@ public class EvaluationDto
     [JsonProperty("projectID")]
     public string ProjectID { get; set; }
 
-        //[Display("Quality result")]
-        //[JsonProperty("qualityResult")]
-        //public QualityResult QualityResult { get; set; }
+    //[Display("Quality result")]
+    //[JsonProperty("qualityResult")]
+    //public QualityResult QualityResult { get; set; }
 
-        //[JsonProperty("scope")]
-        //public Scope Scope { get; set; }
+    //[JsonProperty("scope")]
+    //public Scope Scope { get; set; }
 
-        //[Display("Scored analytical issue count")]
-        //[JsonProperty("scoredAnalyticalIssueCount")]
-        //public int ScoredAnalyticalIssueCount { get; set; }
+    //[Display("Scored analytical issue count")]
+    //[JsonProperty("scoredAnalyticalIssueCount")]
+    //public int ScoredAnalyticalIssueCount { get; set; }
 
     [Display("Source locale")]
     [JsonProperty("srcLocale")]
     public string SrcLocale { get; set; }
 
-        //[JsonProperty("started")]
-        //public string Started { get; set; }
+    //[JsonProperty("started")]
+    //public string Started { get; set; }
 
     [Display("Target locale")]
     [JsonProperty("tgtLocale")]
     public string TgtLocale { get; set; }
 
-        //[Display("Translator ID")]
-        //[JsonProperty("translatorID")]
-        //public string TranslatorID { get; set; }
+    //[Display("Translator ID")]
+    //[JsonProperty("translatorID")]
+    //public string TranslatorID { get; set; }
 
     [Display("Workflow ID")]
     [JsonProperty("workflowID")]
@@ -123,9 +123,9 @@ public class Assignee
     [JsonProperty("fullname")]
     public string Fullname { get; set; }
 
-        [Display("User ID")]
-        [JsonProperty("userId")]
-        public int UserId { get; set; }
+    [Display("User ID")]
+    [JsonProperty("userId")]
+    public int UserId { get; set; }
     }
 
 public class Assignment
@@ -177,8 +177,8 @@ public class Holistic
 
     public class QualityResult
     {
-        //[JsonProperty("analytical")]
-        //public Analytical Analytical { get; set; }
+    //[JsonProperty("analytical")]
+    //public Analytical Analytical { get; set; }
 
     [JsonProperty("auto")]
     public Auto Auto { get; set; }
