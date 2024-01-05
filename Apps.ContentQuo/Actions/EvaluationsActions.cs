@@ -64,20 +64,9 @@ public class EvaluationsActions : BaseInvocable
         var request = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
         var response = await _client.ExecuteAsync<ListIssuesDto>(request);
 
-        var tableRows = response.Data.Issues.Select(x => new List<string> { 
-            x.Id, 
-            x.FileName, 
-            x.SegmentId, 
-            x.Severity,
-            x.Status.Name,
-            string.Join(", ", x.Categories.Select(x => x.Name)), 
-            x.Description ?? "",
-        }).Select(x => new RowResponse { Row = x});
-
         return new ListEvaluationIssuesResponse()
         {
-            Issues = response.Data.Issues,
-            IssuesAsTableRows = tableRows.ToList()
+            Issues = response.Data.Issues
         };
     }
 
