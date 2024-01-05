@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Product>ContentQuo</Product>
+	<Product>ContentQuo Evaluate</Product>
 	<Description>Vendor-agnostic cloud software for managing and scaling Language Quality (LQA) programs for Human and Machine Translation</Description>
 	<Version>1.0.9</Version>
 	<AssemblyName>Apps.ContentQuo</AssemblyName>
