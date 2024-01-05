@@ -126,7 +126,7 @@ public class Assignee
     [Display("User ID")]
     [JsonProperty("userId")]
     public int UserId { get; set; }
-}
+    }
 
 public class Assignment
 {
@@ -175,8 +175,8 @@ public class Holistic
     public Accuracy Accuracy { get; set; }
 }
 
-public class QualityResult
-{
+    public class QualityResult
+    {
     //[JsonProperty("analytical")]
     //public Analytical Analytical { get; set; }
 

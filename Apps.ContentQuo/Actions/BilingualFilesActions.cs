@@ -64,8 +64,7 @@ public class BilingualFilesActions : BaseInvocable
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
 
-        var file = await _fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes),
-            MediaTypeNames.Application.Octet, contentDisposition.FileName);
+        var file = await _fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
         return new()
         {
             File = file
