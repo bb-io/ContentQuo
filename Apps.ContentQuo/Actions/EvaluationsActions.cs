@@ -81,6 +81,7 @@ public class EvaluationsActions : BaseInvocable
         };
     }
 
+    [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.Id ?? "0"}", Method.Get);
