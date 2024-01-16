@@ -27,6 +27,40 @@ Before you can connect you need to make sure that:
 
 ## Actions
 
+### Evaluation
+
+- **Create evaluation**
+- **Start evaluation**
+- **Delete evaluation**
+- **Get evaluation**
+- **Get evaluation workflow**
+
+## Files
+
+- **Delete bilingual file**
+- **Download bilingual file**
+- **List evaluation files**
+- **Upload bilingual file**
+
+### Reporting
+
+- **Download evaluation report**
+- **Get evaluation issues**
+
+## Example
+
+Create an evaluation from memoQ a memoQ project:
+
+![1705420501260](image/README/1705420501260.png)
+
+Story issues in an Excel file:
+
+![1705420538988](image/README/1705420538988.png)
+
+Download an evaluation report an send it on Slack:
+
+![1705420570372](image/README/1705420570372.png)
+
 ## Missing features
 
 There are numerous endpoints in the ContentQuo documentation labeled as [not implemented yet]. The moment these are available they can be added as features to this Blackbird app.
