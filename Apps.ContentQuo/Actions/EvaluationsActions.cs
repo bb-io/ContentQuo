@@ -37,11 +37,42 @@ public class EvaluationsActions : BaseInvocable
     }
 
     [Action("Get evaluation", Description = "Get evaluation")]
-    public async Task<EvaluationDto> GetEvaluation([ActionParameter] GetEvaluationRequest input)
+    public async Task<CompleteEvaluationResponse> GetEvaluation([ActionParameter] GetEvaluationRequest input)
     {
-        var request = new RestRequest($"/evaluations/{input.Id}", Method.Get);
-        var response = await _client.ExecuteAsync<EvaluationDto>(request);
-        return response.Data;
+        var infoRequest = new RestRequest($"/evaluations/{input.Id}", Method.Get);
+        var infoResponse = await _client.ExecuteAsync<EvaluationDto>(infoRequest);
+
+        var issuesRequest = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
+        var issuesResponse = await _client.ExecuteAsync<ListIssuesDto>(issuesRequest);
+
+        var metricsRequest = new RestRequest($"/evaluations/{input.Id}/metrics", Method.Get);
+        var metricsResponse = await _client.ExecuteAsync<MetricsDto>(metricsRequest);
+
+        var filesRequest = new RestRequest($"/evaluations/{input.Id}/files", Method.Get);
+        var filesResponse = await _client.ExecuteAsync<List<BilingualFileDto>>(filesRequest);
+
+        return new CompleteEvaluationResponse
+        {
+            Id = infoResponse.Data.Id,
+            Name = infoResponse.Data.Name,
+            GroupId = infoResponse.Data.GroupID,
+            GroupName = infoResponse.Data.GroupName,
+            WorkflowId = infoResponse.Data.WorkflowID,
+            WorkflowName = infoResponse.Data.WorkflowName,
+            ProfileId = infoResponse.Data.ProfileID,
+            ProjectId = infoResponse.Data.ProjectID,
+            SourceLocale = infoResponse.Data.SrcLocale,
+            TargetLocale = infoResponse.Data.TgtLocale,
+            Assignees = infoResponse?.Data?.Assignees,
+            Issues = issuesResponse.Data?.Issues,
+            Metrics = new EvaluationMetricResponse()
+            {
+                Grade = metricsResponse.Data?.Metrics.FirstOrDefault()?.Grade,
+                Name = metricsResponse.Data?.Metrics.FirstOrDefault()?.Name,
+                QualityScore = metricsResponse.Data?.Metrics.FirstOrDefault()?.QualityScore ?? 0,
+            },
+            BilingualFiles = filesResponse.Data
+        };
     }
 
     [Action("Delete evaluation", Description = "Delete evaluation")]
@@ -58,18 +89,6 @@ public class EvaluationsActions : BaseInvocable
         await _client.ExecuteAsync(request);
     }
 
-    [Action("Get evaluation issues", Description = "Get all the evaluation issues. Use the issues as table rows to insert the issues in a tabular app")]
-    public async Task<ListEvaluationIssuesResponse> GetEvaluationIssues([ActionParameter] GetEvaluationRequest input)
-    {
-        var request = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
-        var response = await _client.ExecuteAsync<ListIssuesDto>(request);
-
-        return new ListEvaluationIssuesResponse()
-        {
-            Issues = response.Data.Issues
-        };
-    }
-
     [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
@@ -84,41 +103,6 @@ public class EvaluationsActions : BaseInvocable
         {
             File = file
         };
-    }
-
-    // Waiting for discussion on how to use these segments in Blackbird
-
-    //[Action("Get evaluation segments", Description = "Get evaluation segments")]
-    //public async Task<ListEvaluationSegmentsResponse> GetEvaluationSegments([ActionParameter] GetEvaluationRequest input)
-    //{
-    //    var request = new RestRequest($"/evaluations/{input.Id}/segments", Method.Get);
-    //    var response = await _client.ExecuteAsync<List<SegmentDto>>(request);
-    //    return new ListEvaluationSegmentsResponse()
-    //    {
-    //        Segments = response.Data
-    //    };
-    //}
-
-    [Action("Get evaluation workflow", Description = "Get evaluation workflow")]
-    public async Task<WorkflowDto> GetEvaluationWorkflow([ActionParameter] GetEvaluationRequest input)
-    {
-        var request = new RestRequest($"/evaluations/{input.Id}/workflow", Method.Get);
-        var response = await _client.ExecuteAsync<WorkflowDto>(request);
-        return response.Data;
-    }
-
-    // Implement metrics after discussion on how to use this step in Blackbird. Main question: Are metric types variable?
-
-    // Waiting for discussion on how to use this step in Blackbird
-
-    //[Action("Assign user to workflow step", Description = "Assigns a user to a workflow step in an evaluation")]
-    //public async Task AssignWorkflowStep([ActionParameter] GetEvaluationRequest input, 
-    //    [ActionParameter] AssignWorkflowStepRequest inputStep)
-    //{
-    //    var request = new RestRequest($"/evaluations/{input.Id}/workflow/assign", Method.Get);
-    //    request.AddQueryParameter("stepId", inputStep.StepId);
-    //    request.AddQueryParameter("userId", inputStep.UserId);
-    //    await _client.ExecuteAsync<WorkflowDto>(request);
-    //}
+    }   
 
 }

@@ -30,14 +30,6 @@ public class BilingualFilesActions : BaseInvocable
         _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
     }
 
-    [Action("List evaluation files", Description = "List evaluation files")]
-    public async Task<ListBilingualFilesResponse> ListAllEvaluationFiles(
-        [ActionParameter] GetEvaluationRequest input)
-    {
-        var request = new RestRequest($"/evaluations/{input.Id}/files", Method.Get);
-        var response = await _client.ExecuteAsync<List<BilingualFileDto>>(request);
-        return new ListBilingualFilesResponse() { BilingualFiles = response.Data };
-    }
 
     [Action("Upload bilingual file", Description = "Upload bilingual file")]
     public async Task<UploadFileResponse> UploadFile([ActionParameter] GetEvaluationRequest input,

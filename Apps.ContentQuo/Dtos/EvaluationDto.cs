@@ -117,9 +117,10 @@ public class Analytical
 
 public class Assignee
 {
-    [JsonProperty("assignments")]
-    public List<Assignment> Assignments { get; set; }
+    //[JsonProperty("assignments")]
+    //public List<Assignment> Assignments { get; set; }
 
+    [Display("Name")]
     [JsonProperty("fullname")]
     public string Fullname { get; set; }
 
