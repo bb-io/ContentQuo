@@ -70,6 +70,25 @@ public class EvaluationsActions : BaseInvocable
         };
     }
 
+    [Action("Get evaluation metric", Description = "Get the grade and quality score of an evaluation. In case of multiple metrics, the first configured metric is shown.")]
+    public async Task<EvaluationMetricResponse> GetEvaluationMetrics([ActionParameter] GetEvaluationRequest input)
+    {
+        var request = new RestRequest($"/evaluations/{input.Id}/metrics", Method.Get);
+        var response = await _client.ExecuteAsync<MetricsDto>(request);
+
+        if (response.Data.Metrics == null || response.Data.Metrics.Count() < 1)
+            throw new Exception("ContentQuo Evaluate did not respond with any metrics. Please contact ContentQuo to get your instance configured.");
+
+        var usedMetric = response.Data.Metrics.First();
+
+        return new EvaluationMetricResponse()
+        {
+            Grade = usedMetric.Grade,
+            Name = usedMetric.Name,
+            QualityScore = usedMetric.QualityScore,
+        };
+    }
+
     [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
