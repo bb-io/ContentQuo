@@ -40,7 +40,7 @@ namespace Apps.ContentQuo.Dtos
         public string Name { get; set; }
 
         [JsonProperty("qualityScore")]
-        public int QualityScore { get; set; }
+        public double QualityScore { get; set; }
 
         //[JsonProperty("subGrades")]
         //public object SubGrades { get; set; }

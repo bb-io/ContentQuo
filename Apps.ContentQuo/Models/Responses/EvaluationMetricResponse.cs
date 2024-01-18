@@ -16,6 +16,6 @@ namespace Apps.ContentQuo.Models.Responses
         public string? Name { get; set; }
 
         [Display("Quality score")]
-        public int QualityScore { get; set; }
+        public double QualityScore { get; set; }
     }
 }
