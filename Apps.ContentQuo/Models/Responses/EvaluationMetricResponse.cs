@@ -10,10 +10,10 @@ namespace Apps.ContentQuo.Models.Responses
     public class EvaluationMetricResponse
     {
         [Display("Grade")]
-        public string Grade { get; set; }
+        public string? Grade { get; set; }
 
         [Display("Name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Display("Quality score")]
         public int QualityScore { get; set; }
