@@ -8,7 +8,7 @@ namespace Apps.ContentQuo;
 public class ContentQuoClient : RestClient
 {
     public ContentQuoClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : 
-        base(new RestClientOptions { BaseUrl = new Uri("https://apac1.contentquo.com/api/v1"), ThrowOnAnyError = true }, configureSerialization: s => s.UseNewtonsoftJson())
+        base(new RestClientOptions { BaseUrl = new Uri($"{authenticationCredentialsProviders.FirstOrDefault(x => x.KeyName == "url").Value.TrimEnd('/').TrimEnd()}/api/v1"), ThrowOnAnyError = true }, configureSerialization: s => s.UseNewtonsoftJson())
     {
         var request = new RestRequest("/auth/authenticate", Method.Post);
         request.AddHeader("Content-Type", "application/json");

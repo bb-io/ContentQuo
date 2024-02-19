@@ -14,6 +14,10 @@ public class ConnectionDefinition : IConnectionDefinition
             ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>
             {
+                new ConnectionProperty("url")
+                {
+                    DisplayName = "Base URL"
+                },
                 new ConnectionProperty("publicKey")
                 {
                     DisplayName = "Public key",
