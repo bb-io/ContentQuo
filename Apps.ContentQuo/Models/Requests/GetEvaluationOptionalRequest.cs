@@ -4,8 +4,8 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.ContentQuo.Models.Requests;
 
-public class GetEvaluationRequest
+public class GetEvaluationOptionalRequest
 {
     [Display("Evaluation ID"), DataSource(typeof(EvaluationDataHandler))]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 }
