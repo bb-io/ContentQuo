@@ -1,5 +1,6 @@
 using System.Globalization;
 using Apps.ContentQuo.Dtos;
+using Apps.ContentQuo.Models.Requests;
 using Apps.ContentQuo.Models.Responses;
 using Apps.ContentQuo.Polling.Models.Memory;
 using Blackbird.Applications.Sdk.Common;
@@ -11,29 +12,28 @@ using RestSharp;
 namespace Apps.ContentQuo.Polling;
 
 [PollingEventList]
-public class PollingList : BaseInvocable
+public class PollingList(InvocationContext invocationContext) : BaseInvocable(invocationContext)
 {
-    public PollingList(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
     [PollingEvent("On evaluations created", "On any new evaluations created")]
     public Task<PollingEventResponse<DateMemory, ListEvaluationsResponse>> OnEvaluationsCreated(
-        PollingEventRequest<DateMemory> request) => ProcessEvaluationPolling(request, new()
+        PollingEventRequest<DateMemory> request,
+        [PollingEventParameter] GetEvaluationOptionalRequest optionalRequest) => ProcessEvaluationPolling(request, new()
     {
         ["createdAfter"] = request.Memory?.LastInteractionDate.ToString(CultureInfo.InvariantCulture)
-    });  
+    }, optionalRequest);  
     
     [PollingEvent("On evaluations finished", "On any evaluations finished")]
     public Task<PollingEventResponse<DateMemory, ListEvaluationsResponse>> OnEvaluationsFinished(
-        PollingEventRequest<DateMemory> request) => ProcessEvaluationPolling(request, new()
+        PollingEventRequest<DateMemory> request,
+        [PollingEventParameter] GetEvaluationOptionalRequest optionalRequest) => ProcessEvaluationPolling(request, new()
     {
         ["finishedAfter"] = request.Memory?.LastInteractionDate.ToString(CultureInfo.InvariantCulture)
-    });
+    }, optionalRequest);
     
     public async Task<PollingEventResponse<DateMemory, ListEvaluationsResponse>> ProcessEvaluationPolling(
         PollingEventRequest<DateMemory> request,
-        Dictionary<string, string?> query)
+        Dictionary<string, string?> query,
+        GetEvaluationOptionalRequest optionalRequest)
     {
         if (request.Memory is null)
         {
@@ -59,6 +59,11 @@ public class PollingList : BaseInvocable
                     LastInteractionDate = DateTime.UtcNow
                 }
             };
+        }
+
+        if (optionalRequest.Id != null)
+        {
+            result = result.Where(x => x.Id == optionalRequest.Id).ToList();
         }
 
         return new()
