@@ -12,6 +12,7 @@ using RestSharp;
 namespace Apps.ContentQuo.Polling;
 
 [PollingEventList]
+
 public class PollingList(InvocationContext invocationContext) : BaseInvocable(invocationContext)
 {
     [PollingEvent("On evaluations created", "On any new evaluations created")]
@@ -60,7 +61,7 @@ public class PollingList(InvocationContext invocationContext) : BaseInvocable(in
                 }
             };
         }
-
+      
         if (optionalRequest.Id != null)
         {
             result = result.Where(x => x.Id == optionalRequest.Id).ToList();
