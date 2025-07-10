@@ -5,6 +5,7 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Mime;
 
@@ -31,47 +32,53 @@ public class EvaluationsActions : BaseInvocable
     public async Task<CreatedEvaluationDto> CreateEvaluation([ActionParameter] CreateEvaluationRequest input)
     {
         var request = new RestRequest("/evaluations", Method.Post);
-        request.AddJsonBody(input);
-        var response = await _client.ExecuteAsync<CreatedEvaluationDto>(request);
-        return response.Data;
+        var jsonBody = input.GetType()
+        .GetProperties()
+        .Where(p => p.GetValue(input) != null && !string.IsNullOrEmpty(p.GetValue(input)?.ToString()))
+        .ToDictionary(p => p.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Cast<JsonPropertyAttribute>()
+        .FirstOrDefault()?.PropertyName ?? p.Name.ToLower(),p => p.GetValue(input));
+        request.AddJsonBody(jsonBody);
+
+        var response = await _client.ExecuteWithErrorHandling<CreatedEvaluationDto>(request);
+        return response;
     }
 
     [Action("Get evaluation", Description = "Get evaluation")]
     public async Task<CompleteEvaluationResponse> GetEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var infoRequest = new RestRequest($"/evaluations/{input.Id}", Method.Get);
-        var infoResponse = await _client.ExecuteAsync<EvaluationDto>(infoRequest);
+        var infoResponse = await _client.ExecuteWithErrorHandling<EvaluationDto>(infoRequest);
 
         var issuesRequest = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
-        var issuesResponse = await _client.ExecuteAsync<ListIssuesDto>(issuesRequest);
+        var issuesResponse = await _client.ExecuteWithErrorHandling<ListIssuesDto>(issuesRequest);
 
         var metricsRequest = new RestRequest($"/evaluations/{input.Id}/metrics", Method.Get);
-        var metricsResponse = await _client.ExecuteAsync<MetricsDto>(metricsRequest);
+        var metricsResponse = await _client.ExecuteWithErrorHandling<MetricsDto>(metricsRequest);
 
         var filesRequest = new RestRequest($"/evaluations/{input.Id}/files", Method.Get);
-        var filesResponse = await _client.ExecuteAsync<List<BilingualFileDto>>(filesRequest);
+        var filesResponse = await _client.ExecuteWithErrorHandling<List<BilingualFileDto>>(filesRequest);
 
         return new CompleteEvaluationResponse
         {
-            Id = infoResponse.Data.Id,
-            Name = infoResponse.Data.Name,
-            GroupId = infoResponse.Data.GroupID,
-            GroupName = infoResponse.Data.GroupName,
-            WorkflowId = infoResponse.Data.WorkflowID,
-            WorkflowName = infoResponse.Data.WorkflowName,
-            ProfileId = infoResponse.Data.ProfileID,
-            ProjectId = infoResponse.Data.ProjectID,
-            SourceLocale = infoResponse.Data.SrcLocale,
-            TargetLocale = infoResponse.Data.TgtLocale,
-            Assignees = infoResponse?.Data?.Assignees,
-            Issues = issuesResponse.Data?.Issues,
+            Id = infoResponse.Id,
+            Name = infoResponse.Name,
+            GroupId = infoResponse.GroupID,
+            GroupName = infoResponse.GroupName,
+            WorkflowId = infoResponse.WorkflowID,
+            WorkflowName = infoResponse.WorkflowName,
+            ProfileId = infoResponse.ProfileID,
+            ProjectId = infoResponse.ProjectID,
+            SourceLocale = infoResponse.SrcLocale,
+            TargetLocale = infoResponse.TgtLocale,
+            Assignees = infoResponse?.Assignees,
+            Issues = issuesResponse?.Issues,
             Metrics = new EvaluationMetricResponse()
             {
-                Grade = metricsResponse.Data?.Metrics.FirstOrDefault()?.Grade,
-                Name = metricsResponse.Data?.Metrics.FirstOrDefault()?.Name,
-                QualityScore = metricsResponse.Data?.Metrics.FirstOrDefault()?.QualityScore ?? 0,
+                Grade = metricsResponse?.Metrics.FirstOrDefault()?.Grade,
+                Name = metricsResponse?.Metrics.FirstOrDefault()?.Name,
+                QualityScore = metricsResponse?.Metrics.FirstOrDefault()?.QualityScore ?? 0,
             },
-            BilingualFiles = filesResponse.Data
+            BilingualFiles = filesResponse
         };
     }
 
@@ -79,21 +86,21 @@ public class EvaluationsActions : BaseInvocable
     public async Task DeleteEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}", Method.Delete);
-        await _client.ExecuteAsync(request);
+        await _client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Start evaluation", Description = "Start evaluation")]
     public async Task StartEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/start", Method.Post);
-        await _client.ExecuteAsync(request);
+        await _client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.ReportId ?? "0"}", Method.Get);
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.ExecuteWithErrorHandling(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
@@ -104,5 +111,4 @@ public class EvaluationsActions : BaseInvocable
             File = file
         };
     }   
-
 }

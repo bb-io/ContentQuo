@@ -1,0 +1,9 @@
+{
+  "ConnectionDefinition": {
+    "url": "",
+    "publicKey": "",
+    "secret": ""
+  },
+  "TestFolder": "TestFiles"
+}
+

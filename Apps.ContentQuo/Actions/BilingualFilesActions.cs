@@ -42,8 +42,8 @@ public class BilingualFilesActions : BaseInvocable
         request.AddParameter("fileUri",
             (uploadFile.FilePath != null ? uploadFile.FilePath + "/" : "") + uploadFile.File.Name);
         request.AddParameter("ref", uploadFile.IsRef ?? false);
-        var response = await _client.ExecuteAsync<UploadFileResponse>(request);
-        return response.Data;
+        var response = await _client.ExecuteWithErrorHandling<UploadFileResponse>(request);
+        return response;
     }
 
     [Action("Download bilingual file", Description = "Download bilingual file")]
@@ -51,7 +51,7 @@ public class BilingualFilesActions : BaseInvocable
         [ActionParameter] DownloadFileRequest uploadFile)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.Id}", Method.Get);
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.ExecuteWithErrorHandling(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
@@ -68,6 +68,6 @@ public class BilingualFilesActions : BaseInvocable
         [ActionParameter] DownloadFileRequest uploadFile)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.Id}", Method.Delete);
-        await _client.ExecuteAsync(request);
+        await _client.ExecuteWithErrorHandling(request);
     }
 }
