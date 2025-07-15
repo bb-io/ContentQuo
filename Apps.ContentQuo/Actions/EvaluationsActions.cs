@@ -3,6 +3,7 @@ using Apps.ContentQuo.Models.Requests;
 using Apps.ContentQuo.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
@@ -33,10 +34,35 @@ public class EvaluationsActions : BaseInvocable
     {
         var request = new RestRequest("/evaluations", Method.Post);
         var jsonBody = input.GetType()
-        .GetProperties()
-        .Where(p => p.GetValue(input) != null && !string.IsNullOrEmpty(p.GetValue(input)?.ToString()))
-        .ToDictionary(p => p.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Cast<JsonPropertyAttribute>()
-        .FirstOrDefault()?.PropertyName ?? p.Name.ToLower(),p => p.GetValue(input));
+            .GetProperties()
+            .Where(p => p.GetValue(input) != null && !string.IsNullOrEmpty(p.GetValue(input)?.ToString()))
+            .ToDictionary(
+                p => p.GetCustomAttributes(typeof(JsonPropertyAttribute), true).Cast<JsonPropertyAttribute>()
+                    .FirstOrDefault()?.PropertyName ?? p.Name.ToLower(),
+                p =>
+                {
+                    var value = p.GetValue(input);
+                    if (p.Name == "ProjectID" && value is string projectIdValue)
+                    {
+                        if (int.TryParse(projectIdValue, out int intValue))
+                            return intValue;
+                        throw new PluginMisconfigurationException($"Invalid Project ID value: {projectIdValue} must be a valid integer.");
+                    }
+                    if (p.Name == "WorkflowID" && value is string workflowIdValue)
+                    {
+                        if (int.TryParse(workflowIdValue, out int intValue))
+                            return intValue;
+                        throw new PluginMisconfigurationException($"Invalid Workflow ID value: {workflowIdValue} must be a valid integer.");
+                    }
+                    if (p.Name == "GroupID" && value is string groupIdValue)
+                    {
+                        if (int.TryParse(groupIdValue, out int intValue))
+                            return intValue;
+                        throw new PluginMisconfigurationException($"Invalid Group ID value: {groupIdValue} must be a valid integer.");
+                    }
+                    return value;
+                });
+
         request.AddJsonBody(jsonBody);
 
         var response = await _client.ExecuteWithErrorHandling<CreatedEvaluationDto>(request);
