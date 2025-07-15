@@ -31,7 +31,7 @@ public class EvaluationDto
 
     [Display("Group ID")]
     [JsonProperty("groupID")]
-    public string GroupID { get; set; }
+    public int GroupID { get; set; }
 
     [Display("Group name")]
     [JsonProperty("groupName")]
@@ -50,7 +50,7 @@ public class EvaluationDto
 
     [Display("Project ID")]
     [JsonProperty("projectID")]
-    public string ProjectID { get; set; }
+    public int ProjectID { get; set; }
 
     //[Display("Quality result")]
     //[JsonProperty("qualityResult")]

@@ -14,10 +14,10 @@ public class ConnectionValidator : IConnectionValidator
 
         try
         {
-            var response = await client.ExecuteAsync(request);
+            var response = await client.ExecuteWithErrorHandling(request);
             return new()
             {
-                IsValid = true
+                IsValid = response.IsSuccessful
             };
         }
         catch (Exception ex)

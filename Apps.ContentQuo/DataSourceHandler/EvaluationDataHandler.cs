@@ -26,8 +26,8 @@ public class EvaluationDataHandler : BaseInvocable, IAsyncDataSourceHandler
         if (context.SearchString != null)
             request.AddQueryParameter("name", context.SearchString);
 
-        var response = await _client.ExecuteAsync<ListEvaluationsResponse>(request);
+        var response = await _client.ExecuteWithErrorHandling<ListEvaluationsResponse>(request);
 
-        return response.Data.Evaluations.ToDictionary(x => x.Id, x => x.Name);
+        return response.Evaluations.ToDictionary(x => x.Id, x => x.Name);
     }
 }
