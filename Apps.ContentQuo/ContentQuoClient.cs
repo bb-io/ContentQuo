@@ -21,7 +21,7 @@ public class ContentQuoClient : BlackBirdRestClient
             key = authenticationCredentialsProviders.FirstOrDefault(x => x.KeyName == "publicKey").Value,
             secret = authenticationCredentialsProviders.FirstOrDefault(x => x.KeyName == "secret").Value
         });
-        var response = this.Execute<TokenDto>(request).Data;
+        var response = Task.Run(() => ExecuteWithErrorHandling<TokenDto>(request)).GetAwaiter().GetResult();
         this.AddDefaultHeader("X-Auth-Token", response.Token);
     }
 
@@ -31,7 +31,7 @@ public class ContentQuoClient : BlackBirdRestClient
             throw new PluginApplicationException(response.ErrorMessage);
 
         var errorMessage = $"Error: {response.Content} - Message: {response.Request?.Resource}";
-        return new PluginApplicationException(errorMessage ?? "Unknown error");
+        return new PluginApplicationException(errorMessage ?? "Server error");
     }
 
     public override async Task<T> ExecuteWithErrorHandling<T>(RestRequest request)
@@ -40,7 +40,7 @@ public class ContentQuoClient : BlackBirdRestClient
         T val = JsonConvert.DeserializeObject<T>(content, JsonSettings);
         if (val == null)
         {
-            throw new PluginApplicationException($"Could not parse {content} to {typeof(T)}");
+            throw new PluginApplicationException($"Server response: {content}; Typeof {typeof(T)}");
         }
 
         return val;
