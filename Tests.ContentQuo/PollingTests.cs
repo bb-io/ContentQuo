@@ -16,7 +16,7 @@ namespace Tests.ContentQuo
     public class PollingTests :TestBase
     {
         [TestMethod]
-        public async Task OnEvaluationsFinished_IsSuccess()
+        public async Task OnEvaluationsCreated_IsSuccess()
         {
 
             var request = new PollingEventRequest<DateMemory>
@@ -30,6 +30,26 @@ namespace Tests.ContentQuo
             var polling = new PollingList(InvocationContext);
 
             var response = await polling.OnEvaluationsCreated(request, optionalRequest);
+
+            var json = JsonConvert.SerializeObject(response, Formatting.Indented);
+            Console.WriteLine(json);
+
+        }
+        [TestMethod]
+        public async Task OnEvaluationsFinished_IsSuccess()
+        {
+
+            var request = new PollingEventRequest<DateMemory>
+            {
+                Memory = new DateMemory
+                {
+                    LastInteractionDate = DateTime.UtcNow.AddDays(-1)
+                }
+            };
+            var optionalRequest = new GetEvaluationOptionalRequest { };
+            var polling = new PollingList(InvocationContext);
+
+            var response = await polling.OnEvaluationsFinished(request, optionalRequest);
 
             var json = JsonConvert.SerializeObject(response, Formatting.Indented);
             Console.WriteLine(json);
