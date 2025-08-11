@@ -99,7 +99,7 @@ public class PollingList(InvocationContext invocationContext) : BaseInvocable(in
             
             query.ToList().ForEach(x => listRequest.AddQueryParameter(x.Key, x.Value));
 
-            response = (await client.ExecuteAsync<ListEvaluationsResponse>(listRequest)).Data!;
+            response = (await client.ExecuteWithErrorHandling<ListEvaluationsResponse>(listRequest));
 
             result.AddRange(response.Evaluations);
             offset += limit;
