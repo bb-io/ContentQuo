@@ -1,5 +1,4 @@
-﻿using Apps.ContentQuo.Dtos;
-using Apps.ContentQuo.Models.Requests;
+﻿using Apps.ContentQuo.Models.Requests;
 using Apps.ContentQuo.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
@@ -10,7 +9,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.ContentQuo.Actions;
 
-[ActionList]
+[ActionList("Bilingual files")]
 public class BilingualFilesActions : BaseInvocable
 {
     #region Fields

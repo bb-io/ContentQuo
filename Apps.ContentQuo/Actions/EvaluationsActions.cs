@@ -12,7 +12,7 @@ using System.Net.Mime;
 
 namespace Apps.ContentQuo.Actions;
 
-[ActionList]
+[ActionList("Evaluations")]
 public class EvaluationsActions : BaseInvocable
 {
     #region Fields
