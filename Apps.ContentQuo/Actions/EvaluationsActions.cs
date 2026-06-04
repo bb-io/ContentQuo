@@ -8,6 +8,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Globalization;
 using System.Net.Mime;
 
 namespace Apps.ContentQuo.Actions;
@@ -108,6 +109,15 @@ public class EvaluationsActions : BaseInvocable
         };
     }
 
+    [Action("Search evaluations", Description = "Search evaluations")]
+    public async Task<ListEvaluationsResponse> SearchEvaluations([ActionParameter] SearchEvaluationsRequest input)
+    {
+        var request = new RestRequest("/evaluations", Method.Get);
+        AddQueryParameters(request, input);
+
+        return await _client.ExecuteWithErrorHandling<ListEvaluationsResponse>(request);
+    }
+
     [Action("Delete evaluation", Description = "Delete evaluation")]
     public async Task DeleteEvaluation([ActionParameter] GetEvaluationRequest input)
     {
@@ -136,5 +146,37 @@ public class EvaluationsActions : BaseInvocable
         {
             File = file
         };
-    }   
+    }
+
+    private static void AddQueryParameters(RestRequest request, object input)
+    {
+        foreach (var property in input.GetType().GetProperties())
+        {
+            var value = property.GetValue(input);
+            if (value is null)
+            {
+                continue;
+            }
+
+            if (value is string stringValue)
+            {
+                if (string.IsNullOrWhiteSpace(stringValue))
+                {
+                    continue;
+                }
+
+                request.AddQueryParameter(GetQueryParameterName(property), stringValue);
+                continue;
+            }
+
+            request.AddQueryParameter(GetQueryParameterName(property), Convert.ToString(value, CultureInfo.InvariantCulture));
+        }
+    }
+
+    private static string GetQueryParameterName(System.Reflection.PropertyInfo property)
+    {
+        return property.GetCustomAttributes(typeof(JsonPropertyAttribute), true)
+            .Cast<JsonPropertyAttribute>()
+            .FirstOrDefault()?.PropertyName ?? property.Name;
+    }
 }
