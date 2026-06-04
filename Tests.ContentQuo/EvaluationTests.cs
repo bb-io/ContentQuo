@@ -26,6 +26,21 @@ namespace Tests.ContentQuo
         }
 
         [TestMethod]
+        public async Task SearchEvaluations_ShouldReturnEvaluations()
+        {
+            var action = new EvaluationsActions(InvocationContext, FileManager);
+            var response = await action.SearchEvaluations(new Apps.ContentQuo.Models.Requests.SearchEvaluationsRequest
+            {
+                Limit = 5
+            });
+            var json = System.Text.Json.JsonSerializer.Serialize(response);
+            Console.WriteLine(json);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNull(response.Evaluations);
+        }
+
+        [TestMethod]
         public async Task CreateEvaluation_ShouldReturnSuccess()
         {
             var action = new EvaluationsActions(InvocationContext, FileManager);
