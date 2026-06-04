@@ -31,7 +31,7 @@ public class SearchEvaluationsRequest
 
     [Display("Finished after")]
     [JsonProperty("finishedAfter")]
-    public string? FinishedAfter { get; set; }
+    public DateTime? FinishedAfter { get; set; }
 
     [Display("Limit")]
     [JsonProperty("limit")]
@@ -43,13 +43,13 @@ public class SearchEvaluationsRequest
 
     [Display("Created after")]
     [JsonProperty("createdAfter")]
-    public string? CreatedAfter { get; set; }
+    public DateTime? CreatedAfter { get; set; }
 
     [Display("Modified before")]
     [JsonProperty("modifiedBefore")]
-    public string? ModifiedBefore { get; set; }
+    public DateTime? ModifiedBefore { get; set; }
 
     [Display("Modified after")]
     [JsonProperty("modifiedAfter")]
-    public string? ModifiedAfter { get; set; }
+    public DateTime? ModifiedAfter { get; set; }
 }

@@ -169,6 +169,18 @@ public class EvaluationsActions : BaseInvocable
                 continue;
             }
 
+            if (value is DateTime dateTimeValue)
+            {
+                request.AddQueryParameter(GetQueryParameterName(property), FormatRfc3339(dateTimeValue));
+                continue;
+            }
+
+            if (value is DateTimeOffset dateTimeOffsetValue)
+            {
+                request.AddQueryParameter(GetQueryParameterName(property), dateTimeOffsetValue.ToString("o", CultureInfo.InvariantCulture));
+                continue;
+            }
+
             request.AddQueryParameter(GetQueryParameterName(property), Convert.ToString(value, CultureInfo.InvariantCulture));
         }
     }
@@ -178,5 +190,14 @@ public class EvaluationsActions : BaseInvocable
         return property.GetCustomAttributes(typeof(JsonPropertyAttribute), true)
             .Cast<JsonPropertyAttribute>()
             .FirstOrDefault()?.PropertyName ?? property.Name;
+    }
+
+    private static string FormatRfc3339(DateTime value)
+    {
+        var utcValue = value.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(value, DateTimeKind.Utc)
+            : value.ToUniversalTime();
+
+        return utcValue.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'", CultureInfo.InvariantCulture);
     }
 }
