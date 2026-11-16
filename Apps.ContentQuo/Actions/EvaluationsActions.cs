@@ -14,22 +14,9 @@ using System.Net.Mime;
 namespace Apps.ContentQuo.Actions;
 
 [ActionList("Evaluations")]
-public class EvaluationsActions : BaseInvocable
+public class EvaluationsActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : ContentQuoInvocable(invocationContext)
 {
-    #region Fields
-
-    private readonly ContentQuoClient _client;
-
-    private readonly IFileManagementClient _fileManagementClient;
-
-    #endregion
-
-    public EvaluationsActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : base(invocationContext)
-    {
-        _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
-        _fileManagementClient = fileManagementClient;
-    }
-
     [Action("Create evaluation", Description = "Create evaluation")]
     public async Task<CreatedEvaluationDto> CreateEvaluation([ActionParameter] CreateEvaluationRequest input)
     {
@@ -66,7 +53,7 @@ public class EvaluationsActions : BaseInvocable
 
         request.AddJsonBody(jsonBody);
 
-        var response = await _client.ExecuteWithErrorHandling<CreatedEvaluationDto>(request);
+        var response = await Client.ExecuteWithErrorHandling<CreatedEvaluationDto>(request);
         return response;
     }
 
@@ -74,16 +61,16 @@ public class EvaluationsActions : BaseInvocable
     public async Task<CompleteEvaluationResponse> GetEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var infoRequest = new RestRequest($"/evaluations/{input.Id}", Method.Get);
-        var infoResponse = await _client.ExecuteWithErrorHandling<EvaluationDto>(infoRequest);
+        var infoResponse = await Client.ExecuteWithErrorHandling<EvaluationDto>(infoRequest);
 
         var issuesRequest = new RestRequest($"/evaluations/{input.Id}/issues", Method.Get);
-        var issuesResponse = await _client.ExecuteWithErrorHandling<ListIssuesDto>(issuesRequest);
+        var issuesResponse = await Client.ExecuteWithErrorHandling<ListIssuesDto>(issuesRequest);
 
         var metricsRequest = new RestRequest($"/evaluations/{input.Id}/metrics", Method.Get);
-        var metricsResponse = await _client.ExecuteWithErrorHandling<MetricsDto>(metricsRequest);
+        var metricsResponse = await Client.ExecuteWithErrorHandling<MetricsDto>(metricsRequest);
 
         var filesRequest = new RestRequest($"/evaluations/{input.Id}/files", Method.Get);
-        var filesResponse = await _client.ExecuteWithErrorHandling<List<BilingualFileDto>>(filesRequest);
+        var filesResponse = await Client.ExecuteWithErrorHandling<List<BilingualFileDto>>(filesRequest);
 
         return new CompleteEvaluationResponse
         {
@@ -115,33 +102,33 @@ public class EvaluationsActions : BaseInvocable
         var request = new RestRequest("/evaluations", Method.Get);
         AddQueryParameters(request, input);
 
-        return await _client.ExecuteWithErrorHandling<ListEvaluationsResponse>(request);
+        return await Client.ExecuteWithErrorHandling<ListEvaluationsResponse>(request);
     }
 
     [Action("Delete evaluation", Description = "Delete evaluation")]
     public async Task DeleteEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}", Method.Delete);
-        await _client.ExecuteWithErrorHandling(request);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Start evaluation", Description = "Start evaluation")]
     public async Task StartEvaluation([ActionParameter] GetEvaluationRequest input)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/start", Method.Post);
-        await _client.ExecuteWithErrorHandling(request);
+        await Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Download evaluation report", Description = "Download the generated evaluation report. Defaults to an .xlsx file but can be cusotmized by ContentQuo.")]
     public async Task<DownloadFileResponse> DownloadEvaluationReport([ActionParameter] GetEvaluationRequest input, [ActionParameter] OptionalReportId reportId)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.ReportId ?? "0"}", Method.Get);
-        var response = await _client.ExecuteWithErrorHandling(request);
+        var response = await Client.ExecuteWithErrorHandling(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
 
-        var file = await _fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
+        var file = await fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
         return new()
         {
             File = file

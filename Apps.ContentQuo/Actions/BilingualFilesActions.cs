@@ -10,38 +10,21 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 namespace Apps.ContentQuo.Actions;
 
 [ActionList("Bilingual files")]
-public class BilingualFilesActions : BaseInvocable
+public class BilingualFilesActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : ContentQuoInvocable(invocationContext)
 {
-    #region Fields
-
-    private readonly ContentQuoClient _client;
-
-    private readonly IFileManagementClient _fileManagementClient;
-
-    #endregion
-
-
-    public BilingualFilesActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) :
-        base(
-            invocationContext)
-    {
-        _fileManagementClient = fileManagementClient;
-        _client = new ContentQuoClient(invocationContext.AuthenticationCredentialsProviders);
-    }
-
-
     [Action("Upload bilingual file", Description = "Upload bilingual file")]
     public async Task<UploadFileResponse> UploadFile([ActionParameter] GetEvaluationRequest input,
         [ActionParameter] UploadFileRequest uploadFile)
     {
-        var file = await _fileManagementClient.DownloadAsync(uploadFile.File);
+        var file = await fileManagementClient.DownloadAsync(uploadFile.File);
 
         var request = new RestRequest($"/evaluations/{input.Id}/files", Method.Post);
         request.AddFile("file", () => file, uploadFile.File.Name);
         request.AddParameter("fileUri",
             (uploadFile.FilePath != null ? uploadFile.FilePath + "/" : "") + uploadFile.File.Name);
         request.AddParameter("ref", uploadFile.IsRef ?? false);
-        var response = await _client.ExecuteWithErrorHandling<UploadFileResponse>(request);
+        var response = await Client.ExecuteWithErrorHandling<UploadFileResponse>(request);
         return response;
     }
 
@@ -49,13 +32,13 @@ public class BilingualFilesActions : BaseInvocable
     public async Task<DownloadFileResponse> DownloadFile([ActionParameter] GetEvaluationRequest input,
         [ActionParameter] DownloadFileRequest uploadFile)
     {
-        var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.Id}", Method.Get);
-        var response = await _client.ExecuteWithErrorHandling(request);
+        var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.FileId}", Method.Get);
+        var response = await Client.ExecuteWithErrorHandling(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
 
-        var file = await _fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
+        var file = await fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
         return new()
         {
             File = file
@@ -66,7 +49,7 @@ public class BilingualFilesActions : BaseInvocable
     public async Task DeleteBilingualFile([ActionParameter] GetEvaluationRequest input,
         [ActionParameter] DownloadFileRequest uploadFile)
     {
-        var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.Id}", Method.Delete);
-        await _client.ExecuteWithErrorHandling(request);
+        var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.FileId}", Method.Delete);
+        await Client.ExecuteWithErrorHandling(request);
     }
 }
