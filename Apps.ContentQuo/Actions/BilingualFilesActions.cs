@@ -11,10 +11,8 @@ namespace Apps.ContentQuo.Actions;
 
 [ActionList("Bilingual files")]
 public class BilingualFilesActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
-    : BaseInvocable(invocationContext)
+    : ContentQuoInvocable(invocationContext)
 {
-    private readonly ContentQuoClient _client = new(invocationContext.AuthenticationCredentialsProviders);
-
     [Action("Upload bilingual file", Description = "Upload bilingual file")]
     public async Task<UploadFileResponse> UploadFile([ActionParameter] GetEvaluationRequest input,
         [ActionParameter] UploadFileRequest uploadFile)
@@ -26,7 +24,7 @@ public class BilingualFilesActions(InvocationContext invocationContext, IFileMan
         request.AddParameter("fileUri",
             (uploadFile.FilePath != null ? uploadFile.FilePath + "/" : "") + uploadFile.File.Name);
         request.AddParameter("ref", uploadFile.IsRef ?? false);
-        var response = await _client.ExecuteWithErrorHandling<UploadFileResponse>(request);
+        var response = await Client.ExecuteWithErrorHandling<UploadFileResponse>(request);
         return response;
     }
 
@@ -35,7 +33,7 @@ public class BilingualFilesActions(InvocationContext invocationContext, IFileMan
         [ActionParameter] DownloadFileRequest uploadFile)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.FileId}", Method.Get);
-        var response = await _client.ExecuteWithErrorHandling(request);
+        var response = await Client.ExecuteWithErrorHandling(request);
         var contentDisposition =
             new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
                 .Value.ToString());
@@ -52,6 +50,6 @@ public class BilingualFilesActions(InvocationContext invocationContext, IFileMan
         [ActionParameter] DownloadFileRequest uploadFile)
     {
         var request = new RestRequest($"/evaluations/{input.Id}/files/{uploadFile.FileId}", Method.Delete);
-        await _client.ExecuteWithErrorHandling(request);
+        await Client.ExecuteWithErrorHandling(request);
     }
 }
