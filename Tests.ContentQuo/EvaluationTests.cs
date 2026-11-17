@@ -1,4 +1,5 @@
 ﻿using Apps.ContentQuo.Actions;
+using Apps.ContentQuo.Models.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,20 @@ namespace Tests.ContentQuo
             {
                 File=new Blackbird.Applications.Sdk.Common.Files.FileReference { Name= "sample_xliff_enus-esla.xliff" }
             });
+            var json = System.Text.Json.JsonSerializer.Serialize(response);
+            Console.WriteLine(json);
+
+            Assert.IsNotNull(response);
+        }
+
+        [TestMethod]
+        public async Task DownloadEvaluations_ShouldReturnEvaluations()
+        {
+            var action = new BilingualFilesActions(InvocationContext, FileManager);
+            var response = await action.DownloadFile(
+                new GetEvaluationRequest { Id = "45135" }, 
+                new DownloadFileRequest {  FileId= "c6f6e1d5fc43298875f87cc3a39d0c9d20880125e7f698b074e13360422da020" }
+            );
             var json = System.Text.Json.JsonSerializer.Serialize(response);
             Console.WriteLine(json);
 
