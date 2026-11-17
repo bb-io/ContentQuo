@@ -1,6 +1,7 @@
 ﻿using Apps.ContentQuo.Dtos;
 using Apps.ContentQuo.Models.Requests;
 using Apps.ContentQuo.Models.Responses;
+using Apps.ContentQuo.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
@@ -9,7 +10,6 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Globalization;
-using System.Net.Mime;
 
 namespace Apps.ContentQuo.Actions;
 
@@ -124,11 +124,18 @@ public class EvaluationsActions(InvocationContext invocationContext, IFileManage
     {
         var request = new RestRequest($"/evaluations/{input.Id}/reports/{reportId.ReportId ?? "0"}", Method.Get);
         var response = await Client.ExecuteWithErrorHandling(request);
-        var contentDisposition =
-            new ContentDisposition(response.ContentHeaders.FirstOrDefault(x => x.Name == "Content-Disposition")
-                .Value.ToString());
+        var contentDisposition = response.ContentHeaders?
+            .FirstOrDefault(x => string.Equals(x.Name, "Content-Disposition", StringComparison.OrdinalIgnoreCase))
+            ?.Value?.ToString();
+        var fileName = ContentDispositionFileNameParser.GetFileName(
+            contentDisposition,
+            $"evaluation-{input.Id}-report.xlsx");
 
-        var file = await fileManagementClient.UploadAsync(new MemoryStream(response.RawBytes), response.ContentType, contentDisposition.FileName);
+        var file = await fileManagementClient.UploadAsync(
+            new MemoryStream(response.RawBytes ?? throw new PluginApplicationException(
+                "ContentQuo returned an empty evaluation report response.")),
+            response.ContentType ?? "application/octet-stream",
+            fileName);
         return new()
         {
             File = file
